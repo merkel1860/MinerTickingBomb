@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -16,14 +17,16 @@ import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
 
-import static com.example.minertickingbomb.R.string.start_btn;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private LinearLayoutCompat parentContainer;
     private Stack<Miner> miners = new Stack<>();
     private Button startButton, restartButton;
     private Button cancelButton ;
+    private TextView playerScoreTextView;
+    private TextView playerNameTextView;
+    private Player aPlayer;
+
     /**
      *
      */
@@ -39,19 +42,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         parentContainer = findViewById(R.id.parent_linearLayout);
+        aPlayer = new Player("Muller", "Dessalinnes");
+
         settingUpButtonRows(parentContainer.getContext());
     }
 
     private void settingUpButtonRows(Context context) {
+        // Building Panel Score
+        LinearLayoutCompat panelLayout = makePanelScore(context);
+        parentContainer.addView(panelLayout);
+
+        // Building Playgroud
         List<LinearLayoutCompat> playGround = makePlayground(context, 6,4);
         for(LinearLayoutCompat linearLayoutRow : playGround){
             parentContainer.addView(linearLayoutRow);
         }
 
-       /* List<LinearLayoutCompat> systemButtons = makePlayground(context,1,2);
-        for(LinearLayoutCompat linearLayoutRow : systemButtons){
-            parentContainer.addView(linearLayoutRow);
-        }*/
+        // Define Start and Cancel button viewed as system button.
+        // and then place them into rout view.
         LinearLayoutCompat systemLayout = makeSystemLinearLayoutCompat(context);
         parentContainer.addView(systemLayout);
 
@@ -102,9 +110,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Miner mine = new Miner(context);
             mine.setText("Hello");
             mine.setValue(pseudoRandomGenerator());
-            mine.setId(((int) mine.getIdentifierMiner().getMostSignificantBits()));
+            mine.setId(mine.createViewID());
             // TODO checking Miner id consistency
-            //            System.out.println(button.getIdentifierMiner()+"/"+button.getId());
+            //System.out.println("Identifier : "+mine.getIdentifierMiner()+"/ ID_MINE :"+mine.getId());
             mine.setOnClickListener(this);
             miners.push(mine);
             linearLayoutCompatRow.addView(mine,buttonLayoutParams);
@@ -145,5 +153,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // TODO review received value in getValue, it eeems that there is some inconsistency
             Toast.makeText(this,"You got: " + ((Miner)findViewById(v.getId())).getValue(),Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public LinearLayoutCompat makePanelScore(Context context){
+        playerNameTextView = new TextView(context);
+        playerScoreTextView = new TextView(context);
+
+        LinearLayoutCompat panelScoreLinearLayout = new LinearLayoutCompat(context);
+        panelScoreLinearLayout.setLayoutParams(makeLayoutParams(0,15,
+                15,15,0));
+        CharSequence player = aPlayer.makeFullName();
+        playerNameTextView.setText(player);
+        LayoutParams playerParams = makeLayoutParams(50,5,
+                5,0,0);
+        panelScoreLinearLayout.addView(playerNameTextView,playerParams);
+
+        CharSequence score = "Score : "+aPlayer.getScore();
+        playerScoreTextView.setText(score);
+        LayoutParams scoreParams = makeLayoutParams(50,5,
+                5,0,0);
+        panelScoreLinearLayout.addView(playerScoreTextView,scoreParams);
+
+        return panelScoreLinearLayout;
+
     }
 }

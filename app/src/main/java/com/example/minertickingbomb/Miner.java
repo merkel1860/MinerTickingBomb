@@ -14,6 +14,11 @@ public class Miner extends androidx.appcompat.widget.AppCompatButton {
 
     }
 
+    public int createViewID(){
+        final int viewID = (int)identifierMiner.getMostSignificantBits();
+        return viewID > 0? viewID: (viewID * -1);
+    }
+
     public int getValue() {
         return value;
     }
