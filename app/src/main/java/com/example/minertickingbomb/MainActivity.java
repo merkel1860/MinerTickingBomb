@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     LinearLayoutCompat parentContainer;
     Stack<Miner> miners = new Stack<>();
+    Button startButton, restartButton, cancelButton ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,16 +33,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void settingUpButtonRows(Context context) {
-        List<LinearLayoutCompat> playGround = makePlayground(context, 5,4);
+        List<LinearLayoutCompat> playGround = makePlayground(context, 6,4);
         for(LinearLayoutCompat linearLayoutRow : playGround){
             parentContainer.addView(linearLayoutRow);
         }
 
+       /* List<LinearLayoutCompat> systemButtons = makePlayground(context,1,2);
+        for(LinearLayoutCompat linearLayoutRow : systemButtons){
+            parentContainer.addView(linearLayoutRow);
+        }*/
+        LinearLayoutCompat systemLayout = makeSystemLinearLayoutCompat(context);
+        parentContainer.addView(systemLayout);
+
+
+    }
+
+    private LinearLayoutCompat makeSystemLinearLayoutCompat(Context context) {
+        startButton = new Button(this);
+        startButton.setText("Start");
+        startButton.setOnClickListener(this);
+//        startButton.setId(R.string.start_btn);
+
+        cancelButton = new Button(this);
+        cancelButton.setText("Cancel");
+        cancelButton.setOnClickListener(this);
+//        cancelButton.setId(R.id.cancel_btn);
+
+        LayoutParams systemButtonParams = makeLayoutParams(50,2,
+                2,0,0);
+
+        LinearLayoutCompat systemLayout = new LinearLayoutCompat(context);
+        systemLayout.setLayoutParams(makeLayoutParams(0,5,5,
+                5,5));
+        systemLayout.addView(startButton,systemButtonParams);
+        systemLayout.addView(cancelButton,systemButtonParams);
+        return systemLayout;
     }
 
     private List<LinearLayoutCompat> makePlayground(Context context, int rows, int colomns) {
         List<LinearLayoutCompat> temporaryRows = new ArrayList<>();
-        LayoutParams layoutParamsRow = makeLayoutParams(4,5,
+        LayoutParams layoutParamsRow = makeLayoutParams(0,5,
                 5,0,0);
         layoutParamsRow.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
 
@@ -54,11 +86,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void makeRowOfButtons(Context context, LinearLayoutCompat linearLayoutCompatRow, int columns) {
-        LayoutParams buttonLayoutParams = makeLayoutParams(1,2,2,
+        LayoutParams buttonLayoutParams = makeLayoutParams(25,2,2,
                 0,0);
         for (int i=0; i<columns;i++){
             Miner button = new Miner(context);
             button.setText("Hello");
+            button.setId(((int) button.getIdentifierMiner().getMostSignificantBits()));
+            // TODO checking Miner id consistency
+            //            System.out.println(button.getIdentifierMiner()+"/"+button.getId());
             button.setOnClickListener(this);
             miners.push(button);
             linearLayoutCompatRow.addView(button,buttonLayoutParams);

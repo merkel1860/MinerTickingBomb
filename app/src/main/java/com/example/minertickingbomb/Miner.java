@@ -5,12 +5,13 @@ import android.content.Context;
 import java.util.UUID;
 
 public class Miner extends androidx.appcompat.widget.AppCompatButton {
-    int value;
-    UUID identifierMiner;
+    private int value;
+    private UUID identifierMiner;
 
     public Miner(Context context) {
         super(context);
         identifierMiner = UUID.randomUUID();
+
     }
 
     public int getValue() {
